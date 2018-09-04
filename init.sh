@@ -1,64 +1,50 @@
 
-echo 'Creating directories'
+#sudo ln -sf /home/box/web/etc/nginx.conf  /etc/nginx/sites-enabled/test.conf
 
-mkdir -p web
+#sudo rm -rf /etc/nginx/sites-enabled/default
 
-cd web && mkdir -p uploads public etc
+#sudo /etc/init.d/nginx restart
 
-cd public && mkdir -p js css img && cd ..
+#sudo rm /etc/gunicorn.d/test
 
-echo 'Create config files for nginx and unicorn'
+#sudo ln -sf /home/box/web/etc/gunicorn.conf   /etc/gunicorn.d/test
 
-touch etc/nginx.conf && touch etc/gunicorn.conf
-
-echo 'Create links, remove default config from /etc/nginx/sites-enabled/default'
-
-sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
-
-sudo rm /etc/nginx/sites-enabled/default 2> /dev/null
-
-sudo /etc/init.d/nginx restart
-
-sudo ln -sf /home/box/web/etc/gunicorn.conf /etc/gunicorn.d/test
-
-sudo /etc/init.d/gunicorn restart
-
-sudo /etc/init.d/mysql start
-
-echo 'Done'
-
-exit
+#sudo /etc/init.d/gunicorn restart
 
 
 
+#!/bin/bash
 
-echo 'Creating directories'
 
-mkdir -p web
 
-cd web && mkdir -p uploads public etc
+# Install
 
-cd public && mkdir -p js css img && cd ..
+sudo pip install django-autofixture pytz
 
-echo 'Create config files for nginx and unicorn'
+sudo apt-get install -y w3m
 
-touch etc/nginx.conf && touch etc/gunicorn.conf
 
-echo 'Create links, remove default config from /etc/nginx/sites-enabled/default'
 
-sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
+# Nginx
 
-sudo rm /etc/nginx/sites-enabled/default 2> /dev/null
+if [ -f /etc/nginx/sites-enabled/default ]; then
+
+  sudo rm /etc/nginx/sites-enabled/default
+
+fi
+
+touch /home/box/nginx.log
+
+sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/ask.conf
 
 sudo /etc/init.d/nginx restart
 
-sudo ln -sf /home/box/web/etc/gunicorn.conf /etc/gunicorn.d/test
+
+
+# Gunicorn (ver. 17.5)
+
+touch /home/box/gunicorn.log
+
+sudo ln -sf /home/box/web/etc/gunicorn_ask.conf /etc/gunicorn.d/ask
 
 sudo /etc/init.d/gunicorn restart
-
-sudo /etc/init.d/mysql start
-
-echo 'Done'
-
-exit
-
