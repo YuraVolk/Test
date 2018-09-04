@@ -1,50 +1,64 @@
 
-#sudo ln -sf /home/box/web/etc/nginx.conf  /etc/nginx/sites-enabled/test.conf
+echo 'Creating directories'
 
-#sudo rm -rf /etc/nginx/sites-enabled/default
+mkdir -p web
 
-#sudo /etc/init.d/nginx restart
+cd web && mkdir -p uploads public etc
 
-#sudo rm /etc/gunicorn.d/test
+cd public && mkdir -p js css img && cd ..
 
-#sudo ln -sf /home/box/web/etc/gunicorn.conf   /etc/gunicorn.d/test
+echo 'Create config files for nginx and unicorn'
 
-#sudo /etc/init.d/gunicorn restart
+touch etc/nginx.conf && touch etc/gunicorn.conf
 
+echo 'Create links, remove default config from /etc/nginx/sites-enabled/default'
 
+sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
 
-#!/bin/bash
-
-
-
-# Install
-
-sudo pip install django-autofixture pytz
-
-sudo apt-get install -y w3m
-
-
-
-# Nginx
-
-if [ -f /etc/nginx/sites-enabled/default ]; then
-
-  sudo rm /etc/nginx/sites-enabled/default
-
-fi
-
-touch /home/box/nginx.log
-
-sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/ask.conf
+sudo rm /etc/nginx/sites-enabled/default 2> /dev/null
 
 sudo /etc/init.d/nginx restart
 
-
-
-# Gunicorn (ver. 17.5)
-
-touch /home/box/gunicorn.log
-
-sudo ln -sf /home/box/web/etc/gunicorn_ask.conf /etc/gunicorn.d/ask
+sudo ln -sf /home/box/web/etc/gunicorn.conf /etc/gunicorn.d/test
 
 sudo /etc/init.d/gunicorn restart
+
+sudo /etc/init.d/mysql start
+
+echo 'Done'
+
+exit
+
+
+
+
+echo 'Creating directories'
+
+mkdir -p web
+
+cd web && mkdir -p uploads public etc
+
+cd public && mkdir -p js css img && cd ..
+
+echo 'Create config files for nginx and unicorn'
+
+touch etc/nginx.conf && touch etc/gunicorn.conf
+
+echo 'Create links, remove default config from /etc/nginx/sites-enabled/default'
+
+sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
+
+sudo rm /etc/nginx/sites-enabled/default 2> /dev/null
+
+sudo /etc/init.d/nginx restart
+
+sudo ln -sf /home/box/web/etc/gunicorn.conf /etc/gunicorn.d/test
+
+sudo /etc/init.d/gunicorn restart
+
+sudo /etc/init.d/mysql start
+
+echo 'Done'
+
+exit
+
