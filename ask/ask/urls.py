@@ -29,38 +29,48 @@ Including another URLconf
 
 """
 
-from django.conf.urls import url, include, patterns
+from django.conf.urls import url, include
 
 from django.contrib import admin
 
-from qa.views import test
-
-admin.autodiscover()
 
 
+from ask.views import found, not_found, init25
 
-#urlpatterns = [
-
-#    url(r'^admin/', admin.site.urls),
-
-#]
+from qa.views import index, popular, ask, login_view, signup
 
 
 
-urlpatterns = patterns ('qa.views',  
+urlpatterns = [
 
-    url(r'^$', 'test'),
 
-    url(r'^login/.*$', 'test', name='login'),
 
-    url(r'^signup/.*$', 'test', name='signup'),
+    url(r'^$', index),
 
-    url(r'^question/(?P<id>[0-9]+)/$', 'test', name='question'),
 
-    url(r'^ask/.*', 'test', name='ask'),
 
-    url(r'^popular/.*', 'test', name='popular'),
+    url(r'^init25/', init25),
 
-    url(r'^new/.*', 'test', name='new'),
+    url(r'^login/', login_view),
 
-)
+    url(r'^signup/', signup),
+
+    url(r'^ask/', ask),
+
+    # url(r'^answer/', answer),
+
+    url(r'^popular/', popular),
+
+    url(r'^new/', found),
+
+
+
+    url(r'^admin/', admin.site.urls),
+
+    url(r'^question/', include('qa.urls')),
+
+
+
+    url(r'^', not_found),
+
+]
