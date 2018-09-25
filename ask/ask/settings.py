@@ -1,3 +1,4 @@
+
 """
 
 Django settings for ask project.
@@ -42,13 +43,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = '*gw!*&qx47v)hv!#kvl5x0*i9ccvrvqb5vi7na$=@*y4$t3kf3'
+SECRET_KEY = 'r817^a02d*k(r%tn0i#(-zp+npyll36n0q$9y356+jo89%79@c'
 
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 
 
 
@@ -66,17 +67,17 @@ INSTALLED_APPS = [
 
     'django.contrib.admin',
 
-    #'django.contrib.auth',
+    'django.contrib.auth',
 
     'django.contrib.contenttypes',
 
-    #'django.contrib.sessions',
+    'django.contrib.sessions',
 
-    #'django.contrib.messages',
+    'django.contrib.messages',
 
-    #'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
 
-	'ask.qa',
+    'qa',
 
 ]
 
@@ -84,21 +85,21 @@ INSTALLED_APPS = [
 
 MIDDLEWARE_CLASSES = [
 
-    #'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 
-    #'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
 
-    #'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',
 
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 
-    #'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
 
-    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 
-    #'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 
-    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
 
@@ -152,17 +153,41 @@ WSGI_APPLICATION = 'ask.wsgi.application'
 
 
 
-DATABASES = {
+if os.name == "nt" or True:
 
-    'default': {
+    DATABASES = {
 
-        'ENGINE': 'django.db.backends.sqlite3',
+        'default': {
 
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'ENGINE': 'django.db.backends.sqlite3',
+
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+        }
 
     }
 
-}
+else:
+
+    DATABASES = {
+
+        'default': {
+
+            'ENGINE': 'django.db.backends.mysql',
+
+            'NAME': 'djbase',
+
+            'USER': 'django',
+
+            'PASSWORD': 'pass123',
+
+            'HOST': '127.0.0.1',
+
+            'PORT': '3306',
+
+        }
+
+    }
 
 
 
