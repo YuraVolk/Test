@@ -28,7 +28,9 @@ from django.contrib.auth.decorators import login_required
 import logging
 
 
-
+if request.method is 'POST':
+	
+    return add_answer(request)
 
 
 def test(request, *args, **kwargs):
