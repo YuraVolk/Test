@@ -1,41 +1,65 @@
 
-# -*- coding: utf-8 -*-
+from django.core.paginator import Paginator
 
 from django.shortcuts import render, get_object_or_404
 
+
+
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+
 from django.views.decorators.http import require_GET
 
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from qa.forms import AskForm, AnswerForm
 
-from django.shortcuts import render
-
-from django.core.paginator import Paginator, EmptyPage
+from qa.models import Question
 
 
 
-from .models import Question
-
-from django.contrib.auth.models import User
-
-from django.contrib.auth import authenticate, login
-
-from .forms import AskForm, AnswerForm, NewUserForm, LoginForm
-
-
-
-from django.contrib.auth.decorators import login_required
-
-import logging
-
-
-if request.method is 'POST':
-	
-    return add_answer(request)
 
 
 def test(request, *args, **kwargs):
 
-    return HttpResponse('OK')
+    resp = 'OK'
+
+    for par in args:
+
+        resp = resp + ', ' + par
+
+    return HttpResponse(resp)
+
+
+
+
+
+def question(request, q_id):
+
+    q = get_object_or_404(Question, id=q_id)
+
+    if request.method == 'POST':
+
+        form = AnswerForm(request.POST)
+
+        form.question = q.id
+
+        if form.is_valid():
+
+            form.save()
+
+            return HttpResponseRedirect(q.get_url())
+
+    else:
+
+        form = AnswerForm(initial={'question': q.id})
+
+    return render(request, 'qa/question.html',
+
+                  {'question': q,
+
+                   'answers': q.answer_set.all(),
+
+                   'answer': form})
+
+
 
 
 
@@ -43,9 +67,13 @@ def test(request, *args, **kwargs):
 
 def index(request, *args, **kwargs):
 
+    questions = Question.objects.all()
+
+    questions = questions.order_by('-added_at')
+
+    return pagination(request, questions, '/?page=')
 
 
-	return render(request, 'question/index.html', {'questions': paginate(request, Question.objects.resent_questions()),})
 
 
 
@@ -53,174 +81,66 @@ def index(request, *args, **kwargs):
 
 def popular(request, *args, **kwargs):
 
-	return render(request, 'question/index.html', {'questions': paginate(request, Question.objects.popular_questions()),})
+    questions = Question.objects.all()
 
+    questions = questions.order_by('-rating')
 
+    return pagination(request, questions, '/popular/?page=')
 
 
 
-@require_GET
 
-def question_details(request, question_id):
 
-	question = get_object_or_404(Question, id=question_id)
+def ask(request, *args, **kwargs):
 
-	form = AnswerForm(initial = {'question': question_id})
+    if request.method == 'POST':
 
-	
+        form = AskForm(request.POST)
 
-	return render(request, 'question/details.html', {'question': question, 'form': form})
+        if form.is_valid():
 
+            return HttpResponseRedirect(form.save().get_url())
 
+    else:
 
-# @login_required
+        form = AskForm()
 
-def question_add(request):
+    return render(request, 'qa/ask.html',
 
-	if request.method == 'POST':
+                  {
 
-		form = AskForm(request.POST)
+                      'form': form
 
-		import pdb; pdb.set_trace()
+                  })
 
-		form.instance.author = request.user
 
-		if form.is_valid():
 
-			question = form.save()
 
-			url = question.get_absolute_url()
 
-			return HttpResponseRedirect(url)
+# TODO: move this helper function somewhere
 
-	else:
+def pagination(request, questions, url):
 
-		form = AskForm()
+    num = request.GET.get('page', 1)
 
-	return render(request, 'question/add.html', {'form' : form})
+    limit = request.GET.get('limit', 10)
 
+    paginator = Paginator(questions, limit)
 
+    if len(paginator.page_range) < int(num) or int(num) < 1:
 
-def signup(request):
+        raise Http404()
 
-	if request.method == 'POST':
+    paginator.baseurl = url
 
-		logger = logging.getLogger(__name__)
+    page = paginator.page(num)
 
-		form = NewUserForm(request.POST)
+    return render(request, 'qa/page.html',
 
-		logger.error(str(form))
+                  {'posts': page.object_list,
 
-		if form.is_valid():
+                   'paginator': paginator,
 
-			user = form.save()
+                   'page': page,
 
-			user = authenticate(username=user.username, password=form.cleaned_data['password'])
-
-			if user is not None:
-
-				# залогинить нового пользователя
-
-				login(request, user)
-
-				# отправить нового пользователя на главную страницу
-
-				return HttpResponseRedirect('/')
-
-	else:
-
-		form = NewUserForm()
-
-	return render(request, 'user/signup.html', {'form' : form})
-
-
-
-def login_view(request):
-
-	if request.method == 'POST':
-
-		form = LoginForm(request.POST)
-
-		if form.is_valid():
-
-			user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-
-			if user is not None:
-
-				if user.is_active:
-
-					login(request, user)
-
-					# отправить пользователя на главную страницу
-
-					return HttpResponseRedirect('/')
-
-	else:
-
-		form = LoginForm()
-
-	return render(request, 'user/login.html', {'form' : form})
-
-
-
-
-
-# @login_required
-
-def answer_add(request):
-
-	if request.method == 'POST':
-
-		form = AnswerForm(request.POST)
-
-		form.instance.author = request.user
-
-		if form.is_valid():
-
-			answer = form.save()
-
-			url = answer.question.get_absolute_url()
-
-			return HttpResponseRedirect(url)
-
-	else:
-
-		form = AnswerForm()
-
-	return render(request, 'answer/add.html', {'form' : form})
-
-
-
-def paginate(request, qs):
-
-	try:
-
-		limit = int(request.GET.get('limit', 10))
-
-	except ValueError:
-
-		limit = 10
-
-	if limit > 10:
-
-		limit = 10
-
-	try:
-
-		page = int(request.GET.get('page',1))
-
-	except ValueError:
-
-		raise Http404
-
-	paginator = Paginator(qs, limit)
-
-	try:
-
-		page = paginator.page(page)
-
-	except EmptyPage:
-
-		page = paginator.page(paginator.num_pages)
-
-	return page
+                   'question_url': '/question/'})
