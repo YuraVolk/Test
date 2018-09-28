@@ -1,21 +1,25 @@
-
-sudo rm /etc/nginx/sites-enabled/test.conf
-
-sudo ln -s /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
-
-sudo rm /etc/nginx/sites-enabled/default
-
-sudo /etc/init.d/nginx restart
+ echo 'test env'
 
 
 
-sudo ln -s /home/box/web/etc/hello.py /etc/gunicorn.d/hello.py
+	./createDB.sh
 
-sudo /etc/init.d/gunicorn restart
+	
+
+	sudo ln -sf ~/web/etc/nginx.conf /etc/nginx/sites-enabled/test.conf
+
+	sudo rm -rf /etc/nginx/sites-enabled/default
+
+	sudo /etc/init.d/nginx restart
 
 
 
-sudo /etc/init.d/mysql restart
+	sudo ln -sf ~/web/etc/gunicorn.conf   /etc/gunicorn.d/test
 
-mysql -u root -e "CREATE DATABASE qa CHARACTER SET utf8"
+	sudo /etc/init.d/gunicorn restart
 
+
+
+	cd ~/web/ask/ask
+
+	gunicorn -b 127.0.0.1:8000 wsgi
