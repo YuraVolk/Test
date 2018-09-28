@@ -36,7 +36,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = '7awt&-$h52-y1strv7#x33$32va(yk8qzh$z-f$%1nn#c7*(sh'
+SECRET_KEY = 'j1ux786af%$x_5b$boy86m1v@72l%0j!ursx=9g*36(+xl20(0'
 
 
 
@@ -62,6 +62,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
 
+    'qa',
+
     'django.contrib.admin',
 
     'django.contrib.auth',
@@ -73,12 +75,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
 
     'django.contrib.staticfiles',
-
-
-
-    # my apps
-
-    'qa',
 
 )
 
@@ -102,16 +98,6 @@ MIDDLEWARE_CLASSES = (
 
 
 
-#Authentication backends
-
-AUTHENTICATION_BACKENDS = (
-
-        'django.contrib.auth.backends.ModelBackend',
-
-    )
-
-
-
 ROOT_URLCONF = 'ask.urls'
 
 
@@ -130,81 +116,21 @@ WSGI_APPLICATION = 'ask.wsgi.application'
 
 DATABASES = {
 
-    # 'default': {
+    'default': {
 
-    #     'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',
 
-    #     'NAME': 'qa',
+        'NAME': 'askpupkin_db',
 
-    #     'USER': 'root',
+        'USER': 'user',
 
-    #     'PASSWORD': '',
+        'PASSWORD': 'q1',
 
-    #     'HOST': 'localhost',
+        'HOST': '127.0.0.1',
 
-    #     'PORT': '',
-
-    # }
-
-    'default' : {
-
-        'ENGINE' : 'django.db.backends.sqlite3',
-
-        'NAME': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'qa.db')
+        'PORT': '3306',
 
     }
-
-}
-
-
-
-LOGGING = {
-
-	'version' : 1,
-
-	'formatters': {
-
-		'simple': { 'format': '%(levelname)s %(message)s' }, 
-
-	},
-
-	'handlers': {
-
-		'file': {
-
-			'level': 'DEBUG',
-
-			'class': 'logging.FileHandler',
-
-			'filename': 'mysite.log',
-
-			'formatter': 'simple'
-
-		},
-
-	},
-
-	'loggers': {
-
-		'django': {
-
-			'handlers' : ['file'],
-
-			'propagate' : True,
-
-			'level': DEBUG,
-
-		},
-
-        'qa': {
-
-            'handlers': ['file'],
-
-            'level': 'DEBUG',
-
-        },
-
-	},
 
 }
 
@@ -220,7 +146,7 @@ LANGUAGE_CODE = 'en-us'
 
 
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 
 
