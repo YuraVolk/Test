@@ -9,32 +9,18 @@ from . import views
 
 urlpatterns = [
 
-	# # ex: /polls/
+    url(r"^$", views.index, name='page'),
 
- #    url(r'^$', views.index, name='index'),
+    url(r"^login/$", views.test, name='login'),
 
- #    # ex: /polls/5/
+    url(r"^signup/$", views.test, name='signup'),
 
- #    url(r'^(?P<question_id>[0-9]+)/$', views.detail, name='detail'),
+    url(r"^new/$", views.test, name='new'),
 
- #    # ex: /polls/5/results/
+    url(r"^ask/.*$", views.ask, name='ask'),
 
- #    url(r'^(?P<question_id>[0-9]+)/results/$', views.results, name='results'),
+    url(r"^popular/$", views.popular, name='popular'),
 
- #    # ex: /polls/5/vote/
-
- #    url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
-
- 	url(r'^$', views.index, name='index'),
-
- 	# ex: /question/123/
-
-    url(r'^(?P<question_id>[0-9]+)/$', views.question_details, name='details'),
-
-    url(r'^(?P<id>\d+)/answer/$', views.answer_add, name='answer_add'),
-
-
-
-
+    url(r"^question/(?P<q_id>\d+)/$", views.question, name='question'),
 
 ]
